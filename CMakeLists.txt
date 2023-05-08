@@ -3,4 +3,4 @@ project(WatsonDungeon)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(WatsonDungeon main.cpp)
+add_executable(WatsonDungeon main.cpp Game.cpp Game.h)

@@ -5,52 +5,49 @@
 #include <conio.h>
 #include "Game.h"
 
-Game::Game() : player() {
-    std::ifstream levelFile("level.dat");
+Game::Game() {
+    levels = std::vector<Level *>();
+    currentLevel = new Level();
+    levels.push_back(currentLevel);
 
-    if (levelFile.is_open()) {
-        level = std::vector<std::vector<char>>();
-        std::string line;
-        while (std::getline(levelFile, line)) {
-            std::vector<char> row;
-            for (char c : line) {
-                row.push_back(c);
-            }
-            level.push_back(row);
-        }
-
-        levelFile.close();
-    }
-
-    // find @ in map
-    for (int i = 0; i < level.size(); i++) {
-        for (int j = 0; j < level[i].size(); j++) {
-            if (level[i][j] == '@') {
-                player.x = j;
-                player.y = i;
-            }
-        }
-    }
-
+    player = Player(currentLevel->initPlayerPos.first, currentLevel->initPlayerPos.second);
 
 }
 
 Game::~Game() = default;
 
 void Game::run() {
-// print the level
+    // title screen
+    std::ifstream title("Assets/title.txt");
+    std::string titleString;
+    while (std::getline(title, titleString)) {
+        std::cout << titleString << std::endl;
+    }
+    while (std::cin.get() != '\n') {
+        std::cout << "Press enter to continue..." << std::endl;
+    }
+    title.close();
+
+    // print the level
     while (true) {
         system("cls");
-        for (int i = 0; i < level.size(); ++i) {
-            for (int j = 0; j < level.at(i).size(); ++j) {
-                if (i == player.y && j == player.x) {
+        for (int i = 0; i < currentLevel->level.size(); ++i) {
+            for (int j = 0; j < currentLevel->level.at(i).size(); ++j) {
+                if (player.x == j && player.y == i) {
                     std::cout << '@';
                 } else {
-                    std::cout << level.at(i).at(j);
+                    std::cout << currentLevel->level.at(i).at(j);
                 }
             }
+
+            // print coins
+            if (i == 2) {
+                std::cout << "\tWatson Coins: " << player.obtainedCoins << "/" << currentLevel->coins;
+            }
+
             std::cout << std::endl;
         }
+        std::cout << "WASD to move" << std::endl;
         processInput();
     }
 
@@ -61,22 +58,58 @@ void Game::processInput() {
 
     switch (input) {
         case 'w':
-            level.at(player.y).at(player.x) = '.';
+            currentLevel->level.at(player.y).at(player.x) = '-';
             player.y--;
+
+            // check for wall #
+            if (currentLevel->level.at(player.y).at(player.x) == '#') {
+                player.y++;
+            }
+
+            checkPlayerPos();
             break;
         case 'a':
-            level.at(player.y).at(player.x) = '.';
+            currentLevel->level.at(player.y).at(player.x) = '-';
             player.x--;
+
+            // check for wall #
+            if (currentLevel->level.at(player.y).at(player.x) == '#') {
+                player.x++;
+            }
+
+            checkPlayerPos();
             break;
         case 's':
-            level.at(player.y).at(player.x) = '.';
+            currentLevel->level.at(player.y).at(player.x) = '-';
             player.y++;
+
+            // check for wall #
+            if (currentLevel->level.at(player.y).at(player.x) == '#') {
+                player.y--;
+            }
+
+            checkPlayerPos();
             break;
         case 'd':
-            level.at(player.y).at(player.x) = '.';
+            currentLevel->level.at(player.y).at(player.x) = '-';
             player.x++;
+
+            // check for wall #
+            if (currentLevel->level.at(player.y).at(player.x) == '#') {
+                player.x--;
+            }
+
+            checkPlayerPos();
             break;
         default:
             break;
+    }
+}
+
+void Game::checkPlayerPos() {
+
+    if (currentLevel->level.at(player.y).at(player.x) == '*') {
+        player.obtainedCoins++;
+        currentLevel->level.at(player.y).at(player.x) = '-';
     }
 }

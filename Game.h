@@ -8,15 +8,9 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include "Player.h"
+#include "Level.h"
 
-struct Player {
-    int x;
-    int y;
-    int health;
-    int maxHealth;
-
-    Player() : x(0), y(0), health(100), maxHealth(100) {}
-};
 
 class Game {
 public:
@@ -26,9 +20,11 @@ public:
 
 private:
     Player player;
-    std::vector<std::vector<char>> level;
+    std::vector<Level*> levels;
+    Level *currentLevel;
 
     void processInput();
+    void checkPlayerPos();
 };
 
 

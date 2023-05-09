@@ -21,10 +21,16 @@ void Game::run() {
     std::ifstream title("Assets/title.txt");
     std::string titleString;
     while (std::getline(title, titleString)) {
-        std::cout << titleString << std::endl;
+        // for each character in the line color it red and print it
+        for (char c : titleString) {
+            std::cout << "\033[48;5;232m" << "\033[38;5;196m" << c << "\033[0m";
+        }
+        std::cout << std::endl;
     }
+    std::cout << "\033[48;5;232m" << "\033[32m" << "If ASCII art is not displaying correctly then go fullscreen :)" << "\033[0m" << std::endl;
+    std::cout << "\033[48;5;232m" << "\033[32m" << "Press enter to start the game..." << "\033[0m" << std::endl;
     while (std::cin.get() != '\n') {
-        std::cout << "Press enter to continue..." << std::endl;
+
     }
     title.close();
 
@@ -36,7 +42,7 @@ void Game::run() {
                 if (player.x == j && player.y == i) {
                     std::cout << '@';
                 } else {
-                    std::cout << currentLevel->level.at(i).at(j);
+                    colorText(currentLevel->level.at(i).at(j));
                 }
             }
 
@@ -111,5 +117,23 @@ void Game::checkPlayerPos() {
     if (currentLevel->level.at(player.y).at(player.x) == '*') {
         player.obtainedCoins++;
         currentLevel->level.at(player.y).at(player.x) = '-';
+    }
+}
+
+void Game::colorText(char tile) {
+    switch (tile) {
+        case '#': // wall
+            std::cout << "\033[1;31m" << tile << "\033[0m";
+            break;
+        case '*': // coin
+            std::cout << "\033[1;33m" << tile << "\033[0m";
+            break;
+        case '@': // player
+            std::cout << "\033[1;32m" << tile << "\033[0m";
+            break;
+        default:
+            std::cout << tile;
+            break;
+
     }
 }

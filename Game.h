@@ -23,6 +23,7 @@ private:
     std::vector<Level*> levels;
     Level *currentLevel;
 
+    void colorText(char tile);
     void processInput();
     void checkPlayerPos();
 };

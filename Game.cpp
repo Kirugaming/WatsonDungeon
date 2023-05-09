@@ -5,6 +5,7 @@
 #include <conio.h>
 #include "Game.h"
 
+
 Game::Game() {
     levels = std::vector<Level *>();
     currentLevel = new Level();
@@ -18,6 +19,9 @@ Game::~Game() = default;
 
 void Game::run() {
     // title screen
+    // play music
+    mciSendString("open \"Assets/Audio/title.mp3\" type mpegvideo alias mp3", NULL, 0, NULL);
+    mciSendString("play mp3", NULL, 0, NULL);
     std::ifstream title("Assets/title.txt");
     std::string titleString;
     while (std::getline(title, titleString)) {

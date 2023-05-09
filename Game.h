@@ -10,6 +10,9 @@
 #include <vector>
 #include "Player.h"
 #include "Level.h"
+#include "windows.h"
+#pragma comment(lib, "Winmm.lib")
+
 
 
 class Game {
